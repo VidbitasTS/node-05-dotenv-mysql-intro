@@ -1,7 +1,7 @@
 GET http://localhost:3000/api/users
 ###
 
-GET http://localhost:3000/api/users/3
+GET http://localhost:3000/api/users/1
 ###
 
 POST http://localhost:3000/api/users
@@ -19,4 +19,6 @@ GET http://localhost:3000/api/users/order/desc
 ###
 
 GET http://localhost:3000/api/users/order/asc
+###
 
+GET http://localhost:3000/api/users/drivers

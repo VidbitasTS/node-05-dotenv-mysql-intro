@@ -4,6 +4,8 @@ const nameAscsEl = document.querySelector('#nameAsc');
 const nameDescsEl = document.querySelector('#nameDesc');
 const tbodyEl = document.querySelector('tbody');
 const createSuccEl = document.querySelector('#createSucc');
+const userIdEl = document.querySelector('#userId');
+const hasCarEl = document.querySelector('#hasCar');
 
 // AddEventListener
 document.forms[0].addEventListener('submit', (e) => {
@@ -18,9 +20,18 @@ document.forms[0].addEventListener('submit', (e) => {
     createUser(dummy);
 });
 
-allUsersEl.addEventListener('click', async() => createTable(await getUsers()));
+allUsersEl.addEventListener('click', async() => await getUsers());
 nameAscsEl.addEventListener('click', async() => await getUsersOrder('asc'));
 nameDescsEl.addEventListener('click', async() => await getUsersOrder('desc'));
+userIdEl.addEventListener('click', async() => {
+    const userNumberEl = document.querySelector('#userNumber');
+    if (userNumberEl.value === '') {
+        alert('Neivedet ID');
+        return;
+    }
+    await getUsersId(userNumberEl.value);
+});
+hasCarEl.addEventListener('click', async() => await getUsersHasCar());
 
 // Funkcijos
 async function createUser(newPostObj) {
@@ -41,14 +52,26 @@ async function createUser(newPostObj) {
 
 async function getUsers() {
     const resp = await fetch('http://localhost:3000/api/users');
-    const dataInJs = await resp.json();
-    return dataInJs;
+    createTable(await resp.json());
+}
+
+async function getUsersHasCar() {
+    const resp = await fetch('http://localhost:3000/api/users/drivers');
+    createTable(await resp.json());
 }
 
 async function getUsersOrder(orderDirect) {
     const resp = await fetch(`http://localhost:3000/api/users/order/${orderDirect}`);
-    const dataInJs = await resp.json();
-    createTable(dataInJs);
+    createTable(await resp.json());
+}
+
+async function getUsersId(id) {
+    const resp = await fetch(`http://localhost:3000/api/users/${id}`);
+    if (!resp.ok) {
+        alert('rezultatu nera !!!')
+        return
+    }
+    createTable([await resp.json()]);
 }
 
 function createTable(arr) {

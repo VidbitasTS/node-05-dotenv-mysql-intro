@@ -34,33 +34,15 @@ app.get('/api/users', async(req, res) => {
     }
 });
 
-app.get('/api/users/order/:orderDirection/', async(req, res) => {
-    const order = req.params.orderDirection === 'desc' ? 'DESC' : 'ASC';
-    // const order = req.params.orderDirection;
-    console.log('order ===', order);
-    try {
-        // 1. prisijungti prie db
-        const connection = await mysql.createConnection(dbConfig);
-        // console.log('Conected to DB'.bgGreen.bold);
-        // 2. atlikti veiksma
-        const sql = `SELECT * FROM users ORDER BY name ${order}`;
-        const [rows] = await connection.query(sql);
-        res.json(rows);
-        // 3.uzdaryti prisijungima
-
-        connection.end();
-    } catch (error) {
-        console.log('Error Conecting to DB'.bgRed.bold, error);
-        // 4. gaudyti klaidas
-        res.status(500).json({ msg: 'something went worng' });
-    }
-});
-
-
 
 app.post('/api/users/', async(req, res) => {
     console.log('req.body ===', req.body);
-    const { name, age, hasCar, town } = req.body
+    const {
+        name,
+        age,
+        hasCar,
+        town,
+    } = req.body;
     try {
         const conn = await mysql.createConnection(dbConfig);
         const sql = 'INSERT INTO users (name, age, hasCar, town) VALUES (?, ?, ?, ?)';
@@ -73,61 +55,64 @@ app.post('/api/users/', async(req, res) => {
     } catch (error) {
         console.log('error connecting to db'.bgRed.bold, error);
         res.status(500).json({ msg: 'something went wrong' });
-
     }
-})
+});
+
+
+app.get('/api/users/drivers', async(req, res) => {
+    try {
+        const connection = await mysql.createConnection(dbConfig);
+        console.log('connected to db'.bgGreen.bold);
+        const sql = 'SELECT * FROM users WHERE hasCar = 1';
+        const [rows] = await connection.query(sql);
+        console.log(rows);
+        if (rows.length !== 0) {
+            res.json(rows);
+        } else {
+            res.status(404).json({ msg: 'Users hasCar not found' });
+        }
+        connection.end();
+    } catch (error) {
+        console.log('error connecting to db'.bgRed.bold, error);
+        res.status(500).json({ msg: 'something went wrong' });
+    }
+});
 
 
 app.get('/api/users/:pid', async(req, res) => {
     try {
-        const pid = +req.params.pid
-            // 1.prisijunkti prie duomenu bazes
+        const pid = +req.params.pid;
         const connection = await mysql.createConnection(dbConfig);
         console.log('connected to db'.bgGreen.bold);
-        // 2. atlikti veiksma
         const sql = 'SELECT * FROM users WHERE id = ?';
-        // const sql = 'SELECT * FROM posts';
         const [rows] = await connection.execute(sql, [pid]);
         console.log(rows);
         if (rows.length === 1) {
             res.json(rows[0]);
         } else {
-            res.status(404).json({ msg: 'Users id not found' })
+            res.status(404).json({ msg: 'Users id not found' });
         }
-        // 3. uzdaryti prisijungima
         connection.end();
     } catch (error) {
         console.log('error connecting to db'.bgRed.bold, error);
-        // 4. gaudyti klaidas
         res.status(500).json({ msg: 'something went wrong' });
     }
 });
 
-app.get('/api/posts/category/:catName', async(req, res) => {
+app.get('/api/users/order/:orderDirection/', async(req, res) => {
+    const order = req.params.orderDirection === 'desc' ? 'DESC' : 'ASC';
+    console.log('order ===', order);
     try {
-        const catName = req.params.catName;
-        // 1.prisijunkti prie duomenu bazes
         const connection = await mysql.createConnection(dbConfig);
-        console.log('connected to db'.bgGreen.bold);
-        // 2. atlikti veiksma
-        const sql = 'SELECT * FROM posts WHERE category = ?';
-        // const sql = 'SELECT * FROM posts';
-        const [rows] = await connection.execute(sql, [catName]);
-        console.log(rows);
-        if (rows.length !== 0) {
-            res.json(rows);
-        } else {
-            res.status(404).json({ msg: 'Post category not found' })
-        }
-        // 3. uzdaryti prisijungima
+        const sql = `SELECT * FROM users ORDER BY name ${order}`;
+        const [rows] = await connection.query(sql);
+        res.json(rows);
         connection.end();
     } catch (error) {
-        console.log('error connecting to db'.bgRed.bold, error);
-        // 4. gaudyti klaidas
-        res.status(500).json({ msg: 'something went wrong' });
+        console.log('Error Conecting to DB'.bgRed.bold, error);
+        res.status(500).json({ msg: 'something went worng' });
     }
 });
-
 
 app.use((req, res) => {
     res.status(404).json({
