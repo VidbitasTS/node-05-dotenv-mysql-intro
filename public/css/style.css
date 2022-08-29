@@ -16,3 +16,14 @@
 .blue {
     background-color: blue;
 }
+
+table,
+th,
+td {
+    border: 1px solid black;
+}
+
+th,
+td {
+    width: 200px;
+}

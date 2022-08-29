@@ -5,7 +5,6 @@ const cors = require('cors');
 const colors = require('colors');
 const mysql = require('mysql2/promise');
 const { dbConfig } = require('./config');
-//const { restart } = require('nodemon');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -22,25 +21,20 @@ app.get('/', (req, res) => {
 
 app.get('/api/users', async(req, res) => {
     try {
-        // 1.prisijunkti prie duomenu bazes
         const connection = await mysql.createConnection(dbConfig);
         console.log('connected to db'.bgGreen.bold);
-        // 2. atlikti veiksma
-        // const sql = 'SELECT * FROM posts WHERE id = 2';
         const sql = 'SELECT * FROM users';
         const [rows] = await connection.query(sql);
         console.log(rows);
         res.json(rows);
-        // 3. uzdaryti prisijungima
         connection.end();
     } catch (error) {
         console.log('error connecting to db'.bgRed.bold, error);
-        // 4. gaudyti klaidas
         res.status(500).json({ msg: 'something went wrong' });
     }
 });
 
-app.get('/api/posts/order/:orderDirection/', async(req, res) => {
+app.get('/api/users/order/:orderDirection/', async(req, res) => {
     const order = req.params.orderDirection === 'desc' ? 'DESC' : 'ASC';
     // const order = req.params.orderDirection;
     console.log('order ===', order);
@@ -49,10 +43,11 @@ app.get('/api/posts/order/:orderDirection/', async(req, res) => {
         const connection = await mysql.createConnection(dbConfig);
         // console.log('Conected to DB'.bgGreen.bold);
         // 2. atlikti veiksma
-        const sql = `SELECT * FROM posts ORDER BY author ${order}`;
+        const sql = `SELECT * FROM users ORDER BY name ${order}`;
         const [rows] = await connection.query(sql);
         res.json(rows);
         // 3.uzdaryti prisijungima
+
         connection.end();
     } catch (error) {
         console.log('Error Conecting to DB'.bgRed.bold, error);

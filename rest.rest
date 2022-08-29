@@ -11,5 +11,12 @@ Content-Type: application/json
   "name": "Mikeeeeee",
   "age": "30",
   "hasCar": "1",
-  "Town": "Klaipeda"
+  "town": "Klaipeda"
 }
+###
+
+GET http://localhost:3000/api/users/order/desc
+###
+
+GET http://localhost:3000/api/users/order/asc
+
