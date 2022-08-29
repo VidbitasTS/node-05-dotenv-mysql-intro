@@ -18,20 +18,27 @@ document.forms[0].addEventListener('submit', (e) => {
 });
 
 
-allUsersEl.addEventListener('click', async() => {
-    const rez = await getUsers();
-    createTable(rez);
-})
+allUsersEl.addEventListener('click', async() => createTable(await getUsers()));
 
-nameAscsEl.addEventListener('click', async() => {
-    const rez = await getUsersAsc();
-    createTable(rez);
-})
+// allUsersEl.addEventListener('click', async() => {
+//     const rez = await getUsers();
+//     createTable(rez);
+// })
 
-nameDescsEl.addEventListener('click', async() => {
-    const rez = await getUsersDesc();
-    createTable(rez);
-})
+// nameAscsEl.addEventListener('click', async() => {
+//     const rez = await getUsersAsc();
+//     createTable(rez);
+// })
+
+// nameDescsEl.addEventListener('click', async() => {
+//     const rez = await getUsersDesc();
+//     createTable(rez);
+// })
+
+nameAscsEl.addEventListener('click', async() => await getUsersOrder('asc'));
+nameDescsEl.addEventListener('click', async() => await getUsersOrder('desc'));
+
+
 
 async function createUser(newPostObj) {
     const resp = await fetch('http://localhost:3000/api/users', {
@@ -49,30 +56,31 @@ async function getUsers() {
     return dataInJs;
 }
 
-async function getUsersAsc() {
-    const resp = await fetch('http://localhost:3000/api/users/order/asc');
-    const dataInJs = await resp.json();
-    //   console.log('resp ===', dataInJs);
-    return dataInJs;
-}
+// async function getUsersAsc() {
+//     const resp = await fetch('http://localhost:3000/api/users/order/asc');
+//     const dataInJs = await resp.json();
+//     return dataInJs;
+// }
 
-async function getUsersDesc() {
-    const resp = await fetch('http://localhost:3000/api/users/order/desc');
+// async function getUsersDesc() {
+//     const resp = await fetch('http://localhost:3000/api/users/order/desc');
+//     const dataInJs = await resp.json();
+//     return dataInJs;
+// }
+
+async function getUsersOrder(orderDirect) {
+    const resp = await fetch(`http://localhost:3000/api/users/order/${orderDirect}`);
     const dataInJs = await resp.json();
-    //   console.log('resp ===', dataInJs);
-    return dataInJs;
+    createTable(dataInJs);
+    // return dataInJs;
 }
 
 
 function createTable(arr) {
-    //    console.table('createtable ====  ', arr)
     let allEl = '';
     for (let i = 0; i < arr.length; i++) {
-        //alert(arr[i].name);
         turiMasina = arr[i].hasCar ? 'turi' : 'neturi'
         allEl += `<tr><td>${arr[i].name}</td><td>${arr[i].age}</td><td>${turiMasina}</td><td>${arr[i].town}</td><td>${arr[i].createdAt.substring(0,10)}</td></tr>`;
     }
-
-    //allEl += `<tr><td>${arr[0].name}</td></tr>`;
     tbodyEl.innerHTML = allEl;
 }
