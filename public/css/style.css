@@ -28,3 +28,7 @@ td {
     width: 200px;
     padding-left: 5px;
 }
+
+#createSucc {
+    color: red;
+}

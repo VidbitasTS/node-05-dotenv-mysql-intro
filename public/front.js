@@ -1,86 +1,61 @@
-// const author = document.getElementsByName('author');
-// const body = document.getElementsByName('body');
+// Nusitaikom
 const allUsersEl = document.querySelector('#allUsers');
 const nameAscsEl = document.querySelector('#nameAsc');
 const nameDescsEl = document.querySelector('#nameDesc');
 const tbodyEl = document.querySelector('tbody');
+const createSuccEl = document.querySelector('#createSucc');
 
+// AddEventListener
 document.forms[0].addEventListener('submit', (e) => {
     e.preventDefault();
+    const { name, age, hasCar, town } = e.target;
     const dummy = {
-        name: e.target.name.value,
-        age: e.target.age.value,
-        hasCar: e.target.hasCar.checked,
-        town: e.target.town.value,
+        name: name.value,
+        age: age.value,
+        hasCar: hasCar.checked,
+        town: town.value,
     };
-    //    console.log(dummy);
     createUser(dummy);
 });
 
-
 allUsersEl.addEventListener('click', async() => createTable(await getUsers()));
-
-// allUsersEl.addEventListener('click', async() => {
-//     const rez = await getUsers();
-//     createTable(rez);
-// })
-
-// nameAscsEl.addEventListener('click', async() => {
-//     const rez = await getUsersAsc();
-//     createTable(rez);
-// })
-
-// nameDescsEl.addEventListener('click', async() => {
-//     const rez = await getUsersDesc();
-//     createTable(rez);
-// })
-
 nameAscsEl.addEventListener('click', async() => await getUsersOrder('asc'));
 nameDescsEl.addEventListener('click', async() => await getUsersOrder('desc'));
 
-
-
+// Funkcijos
 async function createUser(newPostObj) {
     const resp = await fetch('http://localhost:3000/api/users', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(newPostObj),
     });
-    console.log('resp ===', resp);
+    if (resp.status === 201) {
+        createSuccEl.innerHTML = 'Naujas useris sekmingai irasytas!!!';
+    } else {
+        createSuccEl.innerHTML = 'Naujas userio irasymas nesekmingas!!!';
+    }
+    setTimeout(() => {
+        createSuccEl.innerHTML = '';
+    }, 3000)
 }
 
 async function getUsers() {
     const resp = await fetch('http://localhost:3000/api/users');
     const dataInJs = await resp.json();
-    //   console.log('resp ===', dataInJs);
     return dataInJs;
 }
-
-// async function getUsersAsc() {
-//     const resp = await fetch('http://localhost:3000/api/users/order/asc');
-//     const dataInJs = await resp.json();
-//     return dataInJs;
-// }
-
-// async function getUsersDesc() {
-//     const resp = await fetch('http://localhost:3000/api/users/order/desc');
-//     const dataInJs = await resp.json();
-//     return dataInJs;
-// }
 
 async function getUsersOrder(orderDirect) {
     const resp = await fetch(`http://localhost:3000/api/users/order/${orderDirect}`);
     const dataInJs = await resp.json();
     createTable(dataInJs);
-    // return dataInJs;
 }
-
 
 function createTable(arr) {
     let allEl = '';
     for (let i = 0; i < arr.length; i++) {
         turiMasina = arr[i].hasCar ? 'turi' : 'neturi'
-        allEl += `<tr><td>${arr[i].name}</td><td>${arr[i].age}</td><td>${turiMasina}</td><td>${arr[i].town}</td><td>${arr[i].createdAt.substring(0,10)}</td></tr>`;
+        allEl += `<tr><td>${arr[i].id}</td><td>${arr[i].name}</td><td>${arr[i].age}</td><td>${turiMasina}</td><td>${arr[i].town}</td><td>${arr[i].createdAt.substring(0,10)}<br>${arr[i].createdAt.substring(11,19)}</td></tr>`;
     }
     tbodyEl.innerHTML = allEl;
 }
