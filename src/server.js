@@ -102,10 +102,10 @@ app.get('/api/users/:pid', async(req, res) => {
         const pid = +req.params.pid;
         const connection = await mysql.createConnection(dbConfig);
         console.log('connected to db'.bgGreen.bold);
-        const sql = 'SELECT * FROM users WHERE id = ?';
+        const sql = 'SELECT * FROM users WHERE id IN (?)';
         const [rows] = await connection.execute(sql, [pid]);
         console.log(rows);
-        if (rows.length === 1) {
+        if (rows.length !== 0) {
             res.json(rows);
         } else {
             res.status(404).json({ msg: 'Users id not found' });
@@ -119,7 +119,7 @@ app.get('/api/users/:pid', async(req, res) => {
 
 app.get('/api/users/order/:orderDirection/', async(req, res) => {
     const order = req.params.orderDirection === 'desc' ? 'DESC' : 'ASC';
-    console.log('order ===', order);
+
     try {
         const connection = await mysql.createConnection(dbConfig);
         const sql = `SELECT * FROM users ORDER BY name ${order}`;
@@ -135,10 +135,9 @@ app.get('/api/users/order/:orderDirection/', async(req, res) => {
 app.get('/api/users/towns/:townName', async(req, res) => {
     try {
         const townName = req.params.townName;
-        console.log(townName);
         const connection = await mysql.createConnection(dbConfig);
         console.log('connected to db'.bgGreen.bold);
-        const sql = 'SELECT * FROM users WHERE town = ?';
+        const sql = `SELECT * FROM users WHERE town = ?`;
         const [rows] = await connection.execute(sql, [townName]);
         console.log(rows);
         if (rows.length !== 0) {
