@@ -78,6 +78,24 @@ app.get('/api/users/drivers', async(req, res) => {
     }
 });
 
+app.get('/api/users/adults', async(req, res) => {
+    try {
+        const connection = await mysql.createConnection(dbConfig);
+        console.log('connected to db'.bgGreen.bold);
+        const sql = 'SELECT * FROM users WHERE age > 17 ORDER BY age ASC';
+        const [rows] = await connection.query(sql);
+        console.log(rows);
+        if (rows.length !== 0) {
+            res.json(rows);
+        } else {
+            res.status(404).json({ msg: 'Users hasCar not found' });
+        }
+        connection.end();
+    } catch (error) {
+        console.log('error connecting to db'.bgRed.bold, error);
+        res.status(500).json({ msg: 'something went wrong' });
+    }
+});
 
 app.get('/api/users/:pid', async(req, res) => {
     try {
@@ -88,7 +106,7 @@ app.get('/api/users/:pid', async(req, res) => {
         const [rows] = await connection.execute(sql, [pid]);
         console.log(rows);
         if (rows.length === 1) {
-            res.json(rows[0]);
+            res.json(rows);
         } else {
             res.status(404).json({ msg: 'Users id not found' });
         }
@@ -111,6 +129,27 @@ app.get('/api/users/order/:orderDirection/', async(req, res) => {
     } catch (error) {
         console.log('Error Conecting to DB'.bgRed.bold, error);
         res.status(500).json({ msg: 'something went worng' });
+    }
+});
+
+app.get('/api/users/towns/:townName', async(req, res) => {
+    try {
+        const townName = req.params.townName;
+        console.log(townName);
+        const connection = await mysql.createConnection(dbConfig);
+        console.log('connected to db'.bgGreen.bold);
+        const sql = 'SELECT * FROM users WHERE town = ?';
+        const [rows] = await connection.execute(sql, [townName]);
+        console.log(rows);
+        if (rows.length !== 0) {
+            res.json(rows);
+        } else {
+            res.status(404).json({ msg: 'Users town not found' })
+        }
+        connection.end();
+    } catch (error) {
+        console.log('error connecting to db'.bgRed.bold, error);
+        res.status(500).json({ msg: 'something went wrong' });
     }
 });
 
