@@ -1,0 +1,15 @@
+GET http://localhost:3000/api/users
+###
+
+GET http://localhost:3000/api/users/3
+###
+
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "name": "Mikeeeeee",
+  "age": "30",
+  "hasCar": "1",
+  "Town": "Klaipeda"
+}
