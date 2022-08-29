@@ -4,21 +4,20 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "node src/server.js",
-        "dev": "nodemon src/server.js",
+        "start": "nodemon src/server.js",
         "lf": "eslint src/ --fix"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/VidbitasTS/node-05-dotenv-mysql-intro.git"
+        "url": "git+https://github.com/MariusCodeAcademy/type12-node-05-dotenv-mysql-intro.git"
     },
     "keywords": [],
-    "author": "",
+    "author": "Marius K. <Marius@gmail.com>",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/VidbitasTS/node-05-dotenv-mysql-intro/issues"
+        "url": "https://github.com/MariusCodeAcademy/type12-node-05-dotenv-mysql-intro/issues"
     },
-    "homepage": "https://github.com/VidbitasTS/node-05-dotenv-mysql-intro#readme",
+    "homepage": "https://github.com/MariusCodeAcademy/type12-node-05-dotenv-mysql-intro#readme",
     "dependencies": {
         "colors": "^1.4.0",
         "cors": "^2.8.5",
